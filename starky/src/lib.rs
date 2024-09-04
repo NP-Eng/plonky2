@@ -228,7 +228,7 @@ pub mod util;
 mod vanishing_poly;
 pub mod verifier;
 
-#[cfg(test)]
+#[cfg(any(test, feature = "bench"))]
 pub mod fibonacci_stark;
 #[cfg(test)]
 pub mod permutation_stark;
