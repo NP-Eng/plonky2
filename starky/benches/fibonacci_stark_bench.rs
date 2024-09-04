@@ -83,7 +83,7 @@ fn bench_fibonacci_stark(c: &mut Criterion, config: StarkConfig, config_name: &s
     type F = <C as GenericConfig<D>>::F;
     type S = FibonacciStark<F, D>;
 
-    let row_sizes = [1 << 10, 1 << 20];
+    let row_sizes = [1 << 20];
 
     for &num_rows in &row_sizes {
         let public_inputs = [F::ZERO, F::ONE, fibonacci(num_rows - 1, F::ZERO, F::ONE)];
