@@ -25,6 +25,7 @@ use plonky2::plonk::plonk_common::{
     reduce_with_powers, reduce_with_powers_circuit, reduce_with_powers_ext_circuit,
 };
 use plonky2::util::serialization::{Buffer, IoResult, Read, Write};
+use serde::Serialize;
 
 use crate::constraint_consumer::{ConstraintConsumer, RecursiveConstraintConsumer};
 use crate::evaluation_frame::StarkEvaluationFrame;
@@ -442,7 +443,7 @@ impl<F: Field> Lookup<F> {
 }
 
 /// Randomness for a single instance of a permutation check protocol.
-#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Serialize)]
 pub struct GrandProductChallenge<T: Copy + Eq + PartialEq + Debug> {
     /// Randomness used to combine multiple columns into one.
     pub beta: T,
@@ -489,7 +490,7 @@ impl GrandProductChallenge<Target> {
 }
 
 /// Like `GrandProductChallenge`, but with `num_challenges` copies to boost soundness.
-#[derive(Clone, Eq, PartialEq, Debug)]
+#[derive(Clone, Eq, PartialEq, Debug, Serialize)]
 pub struct GrandProductChallengeSet<T: Copy + Eq + PartialEq + Debug> {
     /// A sequence of `num_challenges` challenge pairs, where `num_challenges`
     /// is defined in [`StarkConfig`][crate::config::StarkConfig].
