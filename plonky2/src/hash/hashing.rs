@@ -3,6 +3,8 @@
 use alloc::vec::Vec;
 use core::fmt::Debug;
 
+use serde::Serialize;
+
 use crate::field::extension::Extendable;
 use crate::field::types::Field;
 use crate::hash::hash_types::{HashOut, HashOutTarget, RichField, NUM_HASH_OUT_ELTS};
@@ -60,7 +62,7 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
 
 /// Permutation that can be used in the sponge construction for an algebraic hash.
 pub trait PlonkyPermutation<T: Copy + Default>:
-    AsRef<[T]> + Copy + Debug + Default + Eq + Sync + Send
+    AsRef<[T]> + Copy + Debug + Default + Eq + Sync + Send + Serialize
 {
     const RATE: usize;
     const WIDTH: usize;
