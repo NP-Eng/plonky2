@@ -21,12 +21,14 @@ use plonky2::iop::target::Target;
 use plonky2::plonk::config::{GenericConfig, Hasher};
 use plonky2::util::serialization::{Buffer, IoResult, Read, Write};
 use plonky2_maybe_rayon::*;
+use serde::ser::SerializeSeq;
+use serde::{Serialize, Serializer};
 
 use crate::config::StarkConfig;
 use crate::lookup::GrandProductChallengeSet;
 
 /// Merkle caps and openings that form the proof of a single STARK.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct StarkProof<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: usize> {
     /// Merkle cap of LDEs of trace values.
     pub trace_cap: MerkleCap<F, C::Hasher>,
@@ -174,7 +176,7 @@ pub struct CompressedStarkProofWithPublicInputs<
 
 /// A [`StarkProof`] along with metadata about the initial Fiat-Shamir state, which is used when
 /// creating a recursive wrapper proof around a STARK proof.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct StarkProofWithMetadata<F, C, const D: usize>
 where
     F: RichField + Extendable<D>,
@@ -188,7 +190,7 @@ where
 
 /// A combination of STARK proofs for independent statements operating on possibly shared variables,
 /// along with Cross-Table Lookup (CTL) challenges to assert consistency of common variables across tables.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct MultiProof<
     F: RichField + Extendable<D>,
     C: GenericConfig<D, F = F>,
@@ -196,10 +198,30 @@ pub struct MultiProof<
     const N: usize,
 > {
     /// Proofs for all the different STARK modules.
+    #[serde(serialize_with = "serialize_stark_proof_array")]
     pub stark_proofs: [StarkProofWithMetadata<F, C, D>; N],
     /// Cross-table lookup challenges.
     pub ctl_challenges: GrandProductChallengeSet<F>,
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// NP
+fn serialize_stark_proof_array<S, F, C, const D: usize, const N: usize>(
+    stark_proofs: &[StarkProofWithMetadata<F, C, D>; N],
+    serializer: S,
+) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+    F: RichField + Extendable<D>,
+    C: GenericConfig<D, F = F>,
+{
+    let mut seq = serializer.serialize_seq(Some(N))?;
+    for e in stark_proofs {
+        seq.serialize_element(&e)?;
+    }
+    seq.end()
+}
+///////////////////////////////////////////////////////////////////////////////
 
 impl<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: usize, const N: usize>
     MultiProof<F, C, D, N>
@@ -247,7 +269,7 @@ pub struct MultiProofChallenges<F: RichField + Extendable<D>, const D: usize, co
 }
 
 /// Purported values of each polynomial at the challenge point.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct StarkOpeningSet<F: RichField + Extendable<D>, const D: usize> {
     /// Openings of trace polynomials at `zeta`.
     pub local_values: Vec<F::Extension>,
