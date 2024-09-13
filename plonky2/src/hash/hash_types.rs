@@ -2,6 +2,7 @@
 use alloc::vec::Vec;
 
 use anyhow::ensure;
+use serde::ser::SerializeSeq;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::field::goldilocks_field::GoldilocksField;
@@ -193,11 +194,15 @@ impl<F: RichField, const N: usize> GenericHashOut<F> for BytesHash<N> {
 }
 
 impl<const N: usize> Serialize for BytesHash<N> {
-    fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        todo!()
+        let mut seq = serializer.serialize_seq(Some(N))?;
+        for e in self.0 {
+            seq.serialize_element(&e)?;
+        }
+        seq.end()
     }
 }
 
