@@ -1,0 +1,29 @@
+[package]
+name = "np_benches"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+plonky2 = { path = "../plonky2" }
+plonky2_field = { path = "../field" }
+blake3 = { workspace = true }
+
+[[bin]]
+name = "poseidon_bench"
+path = "src/poseidon_bench.rs"
+
+[[bin]]
+name = "keccak_bench"
+path = "src/keccak_bench.rs"
+
+[[bin]]
+name = "blake3_bench"
+path = "src/blake3_bench.rs"
+
+[lints]
+workspace = true
