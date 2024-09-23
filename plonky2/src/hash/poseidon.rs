@@ -878,10 +878,14 @@ impl<F: RichField> Hasher<F> for PoseidonHash {
     type Permutation = PoseidonPermutation<F>;
 
     fn hash_no_pad(input: &[F]) -> Self::Hash {
+        // TODO remove NP
+        log::debug!("! poseidon hash_n_to_hash_no_pad (len: {})", input.len());
         hash_n_to_hash_no_pad::<F, Self::Permutation>(input)
     }
 
     fn two_to_one(left: Self::Hash, right: Self::Hash) -> Self::Hash {
+        // TODO remove NP
+        log::debug!("! poseidon two_to_one");
         compress::<F, Self::Permutation>(left, right)
     }
 }

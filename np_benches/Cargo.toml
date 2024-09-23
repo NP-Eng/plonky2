@@ -12,6 +12,8 @@ categories.workspace = true
 plonky2 = { path = "../plonky2" }
 plonky2_field = { path = "../field" }
 blake3 = { workspace = true }
+log = { workspace = true }
+env_logger = { version = "0.9.0", default-features = false }
 
 [[bin]]
 name = "poseidon_bench"
@@ -24,6 +26,14 @@ path = "src/keccak_bench.rs"
 [[bin]]
 name = "blake3_bench"
 path = "src/blake3_bench.rs"
+
+[[bin]]
+name = "estimator"
+path = "src/estimator.rs"
+
+[[bin]]
+name = "merkle_tree_bench"
+path = "src/merkle_tree_bench.rs"
 
 [lints]
 workspace = true

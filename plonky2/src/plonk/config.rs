@@ -49,6 +49,9 @@ pub trait Hasher<F: RichField>: Sized + Copy + Debug + Eq + PartialEq {
 
     /// Pad the message using the `pad10*1` rule, then hash it.
     fn hash_pad(input: &[F]) -> Self::Hash {
+        // TODO remove NP
+        log::debug!("! hash_pad (len: {})", input.len());
+
         let mut padded_input = input.to_vec();
         padded_input.push(F::ONE);
         while (padded_input.len() + 1) % Self::Permutation::RATE != 0 {
@@ -61,6 +64,9 @@ pub trait Hasher<F: RichField>: Sized + Copy + Debug + Eq + PartialEq {
     /// Hash the slice if necessary to reduce its length to ~256 bits. If it already fits, this is a
     /// no-op.
     fn hash_or_noop(inputs: &[F]) -> Self::Hash {
+        // TODO remove NP
+        log::debug!("! hash_or_noop (len: {})", inputs.len());
+
         if inputs.len() * 8 <= Self::HASH_SIZE {
             let mut inputs_bytes = vec![0u8; Self::HASH_SIZE];
             for i in 0..inputs.len() {
