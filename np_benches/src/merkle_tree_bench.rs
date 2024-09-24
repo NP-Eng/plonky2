@@ -26,5 +26,5 @@ fn main() {
     MerkleTree::<F, H>::new(leaves.clone(), LEVEL_K);
     let elapsed = start.elapsed();
 
-    println!("Merkle tree built in {:?}", elapsed);
+    println!("Merkle tree built in {:?} ", elapsed);
 }
